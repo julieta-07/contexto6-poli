@@ -1,0 +1,190 @@
+=========================================================
+  CONCEPTOS DEL PARADIGMA ORIENTADO A OBJETOS
+  Proyecto: co.edu.poli.contexto6
+  Paquetes: modelo | vista
+=========================================================
+
+---------------------------------------------------------
+1. METODO CONSTRUCTOR
+---------------------------------------------------------
+Es el metodo especial que se ejecuta automaticamente al crear un objeto
+con 'new'. Tiene el mismo nombre de la clase y no tiene tipo de retorno.
+Se usa para inicializar los atributos del objeto en el momento de su creacion.
+
+  Maquina.java   linea 22  constructor vacio:          public Maquina()
+  Maquina.java   linea 27  constructor con parametros: public Maquina(String, double, String)
+  Nave.java      linea 15  constructor vacio:          public Nave()
+  Nave.java      linea 20  constructor con parametros: public Nave(double, String, String, int)
+  Satelite.java  linea 12  constructor vacio:          public Satelite()
+  Satelite.java  linea 17  constructor con parametros: public Satelite(String)
+  Motor.java     linea 16  constructor vacio:          public Motor()
+  Motor.java     linea 22  constructor con parametros: public Motor(String, String, String)
+
+---------------------------------------------------------
+2. METODOS DE ACCESO (Getters y Setters)
+---------------------------------------------------------
+Metodos publicos que permiten leer (get) o modificar (set) los atributos
+privados de una clase. Implementan el principio de encapsulamiento:
+los atributos son private y solo se accede a ellos por estos metodos.
+
+  Maquina.java   lineas 35-72  getUbicacion(), setUbicacion(), getEnergia(), setEnergia(), etc.
+  Nave.java      lineas 29-44  getVelocidad(), setVelocidad(), getId(), setId(), etc.
+  Satelite.java  lineas 23-27  getId(), setId(), getContadorMotores(), setContadorMotores()
+  Motor.java     lineas 31-42  getColor(), setColor(), getMaterial(), getPotencia(), etc.
+
+---------------------------------------------------------
+3. METODO toString
+---------------------------------------------------------
+Sobrescritura del metodo toString() heredado de la clase Object.
+Retorna una representacion en texto del estado del objeto.
+Se invoca de forma implicita cuando el objeto se usa en println()
+o en una concatenacion de String.
+
+  Maquina.java   linea 90   @Override toString()
+  Nave.java      linea 65   @Override toString()
+  Satelite.java  linea 50   @Override toString()
+  Motor.java     linea 65   @Override toString()
+  Principal.java linea 57   println(maquinas[i]) invoca toString() de forma implicita
+
+---------------------------------------------------------
+4. MODIFICADOR static
+---------------------------------------------------------
+Hace que un atributo o metodo pertenezca a la CLASE y no a una instancia
+particular. Todas las instancias comparten el mismo valor del atributo
+estatico. Se accede con NombreClase.atributo o NombreClase.metodo().
+
+  Maquina.java   linea 18  private static int totalMaquinas
+  Satelite.java  linea 8   private static int contadorMotores
+  Motor.java     linea 12  private static int contadorMotores
+  Maquina.java   linea 72  public static int getTotalMaquinas()
+  Motor.java     linea 42  public static int getContador()
+  Principal.java linea 19  public static final String VERSION
+
+---------------------------------------------------------
+5. MODIFICADOR final
+---------------------------------------------------------
+  Aplicado a un ATRIBUTO: crea una constante; no puede reasignarse despues.
+  Aplicado a un METODO:   impide que las subclases lo sobrescriban.
+  Aplicado a una CLASE:   impide que otras clases hereden de ella.
+
+  Principal.java linea 19   atributo final → public static final String VERSION
+  Principal.java linea 108  metodo final   → public static final void reporteSistema()
+  Principal.java linea 119  clase final    → public static final class SistemaControl
+
+---------------------------------------------------------
+6. VISIBILIDADES (Modificadores de acceso)
+---------------------------------------------------------
+Controlan desde donde se puede acceder a una clase, atributo o metodo.
+  private   → solo dentro de la misma clase
+  protected → en la misma clase, subclases y mismo paquete
+  public    → desde cualquier clase y paquete
+  (default) → solo dentro del mismo paquete (sin modificador)
+
+  Maquina.java   lineas 7-15  private   → atributos de instancia
+  Maquina.java   linea 85     protected → encender(double potencia)
+  Nave.java      lineas 29-44 public    → getters, setters y metodos de comportamiento
+  Motor.java     linea 42     public    → getContador() {static}
+
+---------------------------------------------------------
+7. MULTIPLICIDADES
+---------------------------------------------------------
+Indican cuantos objetos de una clase pueden relacionarse con otra.
+En el codigo se representan como atributos de referencia o colecciones.
+  1    → exactamente uno
+  *    → cero o mas
+  0..1 → cero o uno
+
+  Nave.java      linea 11  private Mision mision    (1 Nave tiene 1 Mision)
+  Mision.java    linea 13  private Planeta planeta   (1 Mision ocurre en 1 Planeta)
+  Satelite.java  linea 8   static int contadorMotores (1 Satelite puede tener * Motores)
+
+---------------------------------------------------------
+8. SOBREESCRITURA DE METODOS (@Override)
+---------------------------------------------------------
+Una subclase redefine un metodo de su superclase con la misma firma
+(mismo nombre y mismos parametros). En tiempo de ejecucion Java ejecuta
+la version de la clase REAL del objeto (dynamic dispatch).
+
+  Nave.java      linea 53  @Override calculartiempoactivo()
+  Nave.java      linea 59  @Override encender()
+  Satelite.java  linea 38  @Override calculartiempoactivo()
+  Satelite.java  linea 44  @Override encender()
+  Motor.java     linea 53  @Override encender()  ← tercer nivel de herencia
+  Principal.java lineas 51-62  bucle que imprime el resultado de la sobrescritura
+
+---------------------------------------------------------
+9. SOBRECARGA DE METODOS (Overloading)
+---------------------------------------------------------
+Varios metodos con el MISMO NOMBRE pero diferente lista de parametros
+dentro de la misma clase. El compilador elige cual invocar segun los
+argumentos que se pasen.
+
+  Maquina.java  linea 81  encender()               sin parametros
+  Maquina.java  linea 85  encender(double potencia) con parametro double
+  Motor.java    linea 60  encender(String modo)     con parametro String
+  → tres versiones del metodo encender: mismo nombre, distintos parametros
+
+---------------------------------------------------------
+10. CREACION DE OBJETOS
+---------------------------------------------------------
+Se realiza con el operador 'new' seguido del constructor de la clase.
+Reserva espacio en memoria (heap) y retorna una referencia al nuevo objeto.
+
+  Principal.java linea 28   new Nave(12000.0, "N-001", "Exploradora", 6)
+  Principal.java linea 33   new Satelite("SAT-Alpha")
+  Principal.java linea 38   new Motor("Rojo", "Acero", "Alta")
+  Principal.java linea 119  new SistemaControl()
+  Principal.java linea 98   new Nave(5000.0, "DEF-001", "Carga", 4)  dentro de crearMaquinaDefecto()
+
+---------------------------------------------------------
+11. AGREGACIONES
+---------------------------------------------------------
+Relacion "tiene un" donde un objeto contiene una referencia a otro,
+pero ambos pueden existir de forma independiente (ciclo de vida propio).
+Se representa en UML con un diamante vacio (◇).
+
+  Nave.java     linea 11  private Mision mision
+    → Nave agrega a Mision; si la Nave se destruye, Mision puede seguir existiendo.
+  Mision.java   linea 13  private Planeta planeta
+    → Mision agrega a Planeta.
+
+---------------------------------------------------------
+12. HERENCIA
+---------------------------------------------------------
+Mecanismo por el que una subclase adquiere los atributos y metodos de su
+superclase usando la palabra clave 'extends'. Permite reutilizacion de
+codigo y establece jerarquias de tipos.
+
+  Jerarquia del proyecto:
+    Maquina   (supersuperclase)
+      ├── Nave      extends Maquina   (subclase)        paquete modelo
+      └── Satelite  extends Maquina   (subclase)        paquete modelo
+             └── Motor  extends Satelite (sub-subclase) paquete servicios
+
+  Nave.java      linea 3  public class Nave extends Maquina
+  Satelite.java  linea 3  public class Satelite extends Maquina
+  Motor.java     linea 5  public class Motor extends Satelite
+
+---------------------------------------------------------
+13. POLIMORFISMO
+---------------------------------------------------------
+Capacidad de una referencia de tipo superclase de apuntar a objetos de
+subclases distintas y ejecutar en tiempo de ejecucion el metodo propio
+de la clase real del objeto.
+
+  Principal.java linea 24      Maquina[] maquinas = new Maquina[5]
+    → arreglo de supersuperclase que almacena Nave, Satelite y Motor
+
+  Principal.java lineas 51-62  maquinas[i].encender()
+    → se ejecuta el metodo sobrescrito de cada clase real (dynamic dispatch)
+
+  Principal.java linea 103     procesarMaquina(Maquina m)
+    → metodo que recibe cualquier subclase de Maquina como parametro
+
+  Principal.java linea 110     crearMaquinaDefecto(): Maquina
+    → retorna una Nave referenciada como Maquina (retorno polimorfico)
+
+=========================================================
+  PUNTO 5 — ENLACE AL REPOSITORIO EN GITHUB
+=========================================================
+https://github.com/julieta-07/contexto6-poli
