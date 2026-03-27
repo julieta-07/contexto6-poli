@@ -188,3 +188,9 @@ de la clase real del objeto.
   PUNTO 5 — ENLACE AL REPOSITORIO EN GITHUB
 =========================================================
 https://github.com/julieta-07/contexto6-poli
+
+=========================================================
+  PUNTO 6 — ENLACE AL VIDEO (FUNCIONAMIENTO DEL CRUD)
+=========================================================
+https://youtu.be/lyEFkxOTGuo
+
