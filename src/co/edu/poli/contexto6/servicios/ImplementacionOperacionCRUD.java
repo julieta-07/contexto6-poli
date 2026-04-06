@@ -1,100 +1,185 @@
 package co.edu.poli.contexto6.servicios;
 
 import co.edu.poli.contexto6.modell.Maquina;
-import co.edu.poli.contexto6.modell.Nave;
-import co.edu.poli.contexto6.modell.Satelite;
+import java.io.*;
 
-public class ImplementacionOperacionCRUD implements OperacionCRUD {
+/**
+ * Implementación de operaciones CRUD y persistencia en archivo
+ * para objetos de tipo Maquina.
+ *
+ * Esta clase permite crear, leer, modificar, eliminar,
+ * guardar y cargar objetos de tipo Maquina.
+ *
+ * @author Julieta Villarraga Corredor
+ * @since 2026
+ * @version 1.0
+ * @see implementacionOperacionCRUD
+ */
+public class ImplementacionOperacionCRUD
+        implements OperacionCRUD, OperacionArchivo {
 
-    private Maquina[] arregloObjetos;
+    /**
+     * Arreglo que almacena los objetos de tipo Maquina.
+     */
+    private Maquina[] arregloMaquina = new Maquina[5];
 
-    public ImplementacionOperacionCRUD() {
-        this.arregloObjetos = new Maquina[2]; // Inicial con tamaño 2
-    }
-
-    // Método auxiliar para obtener el ID independientemente de si es Nave o
-    // Satélite
-    private String obtenerId(Maquina m) {
-        if (m == null)
-            return null;
-        if (m instanceof Nave) {
-            return ((Nave) m).getId();
-        } else if (m instanceof Satelite) {
-            return ((Satelite) m).getId();
-        }
-        return null;
-    }
-
+    /**
+     * Crea y almacena un objeto Maquina en la primera
+     * posición disponible del arreglo.
+     *
+     * @param objeto objeto de tipo Maquina a almacenar
+     * @return mensaje indicando si la creación fue exitosa o si ocurrió un error
+     */
     @Override
     public String crear(Maquina objeto) {
         if (objeto == null) {
-            return "Error: No se puede agregar un objeto nulo.";
+            return "Error: objeto nulo.";
         }
 
-        // Buscar el primer null de izquierda a derecha
-        for (int i = 0; i < arregloObjetos.length; i++) {
-            if (arregloObjetos[i] == null) {
-                arregloObjetos[i] = objeto;
-                return "Objeto creado exitosamente en la posición " + i + ".";
+        for (int i = 0; i < arregloMaquina.length; i++) {
+            if (arregloMaquina[i] == null) {
+                arregloMaquina[i] = objeto;
+                return "Objeto creado en posicion " + i;
             }
         }
 
-        // Si no se encontró un null, el arreglo está lleno. Generar crecimiento
-        // "infinito".
-        Maquina[] nuevoArreglo = new Maquina[arregloObjetos.length * 2];
-        System.arraycopy(arregloObjetos, 0, nuevoArreglo, 0, arregloObjetos.length);
-
-        // Agregar el nuevo objeto en la primera posición disponible del nuevo arreglo
-        nuevoArreglo[arregloObjetos.length] = objeto;
-        arregloObjetos = nuevoArreglo;
-
-        return "Arreglo redimensionado. Objeto creado exitosamente en la posición " + (arregloObjetos.length / 2) + ".";
+        return "Error: arreglo lleno.";
     }
 
+    /**
+     * Busca y retorna una máquina según su identificador.
+     *
+     * @param id identificador de la máquina
+     * @return objeto Maquina encontrado o null si no existe
+     */
     @Override
     public Maquina leerUno(String id) {
-        if (id == null)
+        if (id == null) {
             return null;
-        for (Maquina m : arregloObjetos) {
-            if (m != null && id.equals(obtenerId(m))) {
-                return m;
+        }
+
+        for (Maquina maquina : arregloMaquina) {
+            if (maquina != null && maquina.getId().equals(id)) {
+                return maquina;
             }
         }
+
         return null;
     }
 
+    /**
+     * Retorna todos los objetos almacenados en el arreglo.
+     *
+     * @return arreglo de objetos Maquina
+     */
     @Override
     public Maquina[] leerTodos() {
-        return arregloObjetos;
+        return arregloMaquina;
     }
 
+    /**
+     * Modifica un objeto Maquina existente según su id.
+     *
+     * @param id identificador del objeto a modificar
+     * @param objeto nuevo objeto que reemplazará al anterior
+     * @return mensaje indicando el resultado de la modificación
+     */
     @Override
     public String modificar(String id, Maquina objeto) {
         if (id == null || objeto == null) {
-            return "Error: ID a modificar o el nuevo objeto es inválido.";
+            return "Error: datos invalidos.";
         }
 
-        for (int i = 0; i < arregloObjetos.length; i++) {
-            if (arregloObjetos[i] != null && id.equals(obtenerId(arregloObjetos[i]))) {
-                arregloObjetos[i] = objeto;
-                return "Objeto con ID " + id + " modificado exitosamente.";
+        for (int i = 0; i < arregloMaquina.length; i++) {
+            if (arregloMaquina[i] != null &&
+                arregloMaquina[i].getId().equals(id)) {
+
+                arregloMaquina[i] = objeto;
+                return "Objeto modificado correctamente.";
             }
         }
-        return "Error: Objeto con ID " + id + " no encontrado.";
+
+        return "Objeto no encontrado.";
     }
 
+    /**
+     * Elimina una máquina del arreglo según su id.
+     *
+     * @param id identificador del objeto a eliminar
+     * @return objeto eliminado o null si no fue encontrado
+     */
     @Override
     public Maquina eliminar(String id) {
-        if (id == null)
+        if (id == null) {
             return null;
+        }
 
-        for (int i = 0; i < arregloObjetos.length; i++) {
-            if (arregloObjetos[i] != null && id.equals(obtenerId(arregloObjetos[i]))) {
-                Maquina eliminada = arregloObjetos[i];
-                arregloObjetos[i] = null; // Liberamos la posición dejándola en null
-                return eliminada;
+        for (int i = 0; i < arregloMaquina.length; i++) {
+            if (arregloMaquina[i] != null &&
+                arregloMaquina[i].getId().equals(id)) {
+
+                Maquina eliminado = arregloMaquina[i];
+                arregloMaquina[i] = null;
+                return eliminado;
             }
         }
+
         return null;
+    }
+
+    /**
+     * Guarda el arreglo de máquinas en un archivo .dat.
+     *
+     * @param maquinas arreglo de máquinas a guardar
+     * @param path ruta donde se guardará el archivo
+     * @param name nombre del archivo
+     * @return mensaje indicando si el archivo fue guardado correctamente
+     */
+    @Override
+    public String serializar(Maquina[] maquinas, String path, String name) {
+        try {
+            File directorio = new File(path);
+            if (!directorio.exists()) {
+                directorio.mkdirs();
+            }
+
+            ObjectOutputStream salida = new ObjectOutputStream(
+                    new FileOutputStream(path + name + ".dat")
+            );
+
+            salida.writeObject(maquinas);
+            salida.close();
+
+            return "Archivo guardado correctamente en: "
+                    + path + name + ".dat";
+
+        } catch (IOException e) {
+            return "Error al guardar archivo: " + e.getMessage();
+        }
+    }
+
+    /**
+     * Carga un arreglo de máquinas desde un archivo .dat.
+     *
+     * @param path ruta del archivo
+     * @param name nombre del archivo
+     * @return arreglo de máquinas cargado desde el archivo
+     */
+    @Override
+    public Maquina[] deserializar(String path, String name) {
+        try {
+            ObjectInputStream entrada = new ObjectInputStream(
+                    new FileInputStream(path + name + ".dat")
+            );
+
+            arregloMaquina = (Maquina[]) entrada.readObject();
+            entrada.close();
+
+            return arregloMaquina;
+
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Error al leer archivo: " + e.getMessage());
+            return null;
+        }
     }
 }
