@@ -27,7 +27,7 @@ public interface OperacionCRUD {
      * @return {@code String} con un mensaje que indica el resultado de la operación:
      *         éxito con la posición de inserción, o error si el objeto es inválido
      */
-    String crear(Maquina objeto);
+    String crear(Maquina objeto)throws IllegalArgumentException;
 
     /**
      * Busca y retorna el objeto {@link Maquina} que coincida con el ID indicado.
@@ -36,7 +36,7 @@ public interface OperacionCRUD {
      * @return objeto {@link Maquina} encontrado, o {@code null} si no existe
      *         ningún objeto con ese ID en la colección
      */
-    Maquina leerUno(String id);
+    Maquina leerUno(String id)throws IllegalArgumentException;
 
     /**
      * Retorna todos los objetos {@link Maquina} almacenados en la colección,
@@ -45,7 +45,7 @@ public interface OperacionCRUD {
      * @return arreglo de {@link Maquina} con todos los objetos registrados;
      *         las posiciones sin objeto contienen {@code null}
      */
-    Maquina[] leerTodos();
+    Maquina[] leerTodos()throws IllegalArgumentException;
 
     /**
      * Reemplaza el objeto {@link Maquina} cuyo ID coincida con el valor indicado
@@ -58,7 +58,7 @@ public interface OperacionCRUD {
      *         éxito si fue encontrado y modificado, o error si el ID o el objeto
      *         son inválidos, o si no se encontró ningún objeto con ese ID
      */
-    String modificar(String id, Maquina objeto);
+    String modificar(String id, Maquina objeto)throws IllegalArgumentException;
 
     /**
      * Elimina de la colección el objeto {@link Maquina} cuyo ID coincida
@@ -69,5 +69,5 @@ public interface OperacionCRUD {
      *         {@code null} si {@code id} es {@code null} o no existe ningún
      *         objeto con ese ID en la colección
      */
-    Maquina eliminar(String id);
+    Maquina eliminar(String id)throws IllegalArgumentException;
 }

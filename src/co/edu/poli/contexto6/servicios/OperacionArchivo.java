@@ -39,7 +39,8 @@ public interface OperacionArchivo {
      *         éxito con la ruta completa del archivo generado, o descripción del error
      *         si la operación no pudo completarse
      */
-    public String serializar(Maquina[] maquinas, String path, String name);
+    public String serializar(Maquina[] maquinas, String path, String name)
+            throws IllegalArgumentException;
 
     /**
      * Deserializa y reconstruye un arreglo de objetos {@link Maquina} a partir
@@ -57,5 +58,6 @@ public interface OperacionArchivo {
      *         {@code null} si el archivo no existe o si ocurrió un error durante
      *         la deserialización
      */
-    public Maquina[] deserializar(String path, String name);
+    public Maquina[] deserializar(String path, String name)
+            throws IllegalArgumentException;
 }

@@ -33,7 +33,7 @@ public class ImplementacionOperacionCRUD
     @Override
     public String crear(Maquina objeto) {
         if (objeto == null) {
-            return "Error: objeto nulo.";
+            throw new IllegalArgumentException("El objeto no puede ser nulo.");
         }
 
         for (int i = 0; i < arregloMaquina.length; i++) {
@@ -43,7 +43,7 @@ public class ImplementacionOperacionCRUD
             }
         }
 
-        return "Error: arreglo lleno.";
+         throw new IllegalArgumentException("Error: el arreglo esta lleno.");
     }
 
     /**
@@ -53,9 +53,9 @@ public class ImplementacionOperacionCRUD
      * @return objeto Maquina encontrado o null si no existe
      */
     @Override
-    public Maquina leerUno(String id) {
-        if (id == null) {
-            return null;
+    public Maquina leerUno(String id)throws IllegalArgumentException {
+        if (id == null || id.isEmpty()){
+        throw new IllegalArgumentException("El ID no puede ser nulo o vacio.");
         }
 
         for (Maquina maquina : arregloMaquina) {
@@ -85,11 +85,13 @@ public class ImplementacionOperacionCRUD
      * @return mensaje indicando el resultado de la modificación
      */
     @Override
-    public String modificar(String id, Maquina objeto) {
-        if (id == null || objeto == null) {
-            return "Error: datos invalidos.";
+    public String modificar(String id, Maquina objeto)throws IllegalArgumentException {
+        if (id == null || id.isEmpty()) {
+        throw new IllegalArgumentException("El ID no puede ser nulo o vacio.");
         }
-
+         if (objeto == null) {
+        throw new IllegalArgumentException("El objeto nuevo no puede ser nulo.");
+    }
         for (int i = 0; i < arregloMaquina.length; i++) {
             if (arregloMaquina[i] != null &&
                 arregloMaquina[i].getId().equals(id)) {
@@ -109,9 +111,9 @@ public class ImplementacionOperacionCRUD
      * @return objeto eliminado o null si no fue encontrado
      */
     @Override
-    public Maquina eliminar(String id) {
-        if (id == null) {
-            return null;
+    public Maquina eliminar(String id)throws IllegalArgumentException {
+        if (id == null|| id.isEmpty()) {
+        throw new IllegalArgumentException("El ID no puede ser nulo o vacio.");
         }
 
         for (int i = 0; i < arregloMaquina.length; i++) {
@@ -136,27 +138,31 @@ public class ImplementacionOperacionCRUD
      * @return mensaje indicando si el archivo fue guardado correctamente
      */
     @Override
-    public String serializar(Maquina[] maquinas, String path, String name) {
-        try {
-            File directorio = new File(path);
-            if (!directorio.exists()) {
-                directorio.mkdirs();
-            }
-
-            ObjectOutputStream salida = new ObjectOutputStream(
-                    new FileOutputStream(path + name + ".dat")
-            );
-
-            salida.writeObject(maquinas);
-            salida.close();
-
-            return "Archivo guardado correctamente en: "
-                    + path + name + ".dat";
-
-        } catch (IOException e) {
-            return "Error al guardar archivo: " + e.getMessage();
-        }
+    public String serializar(Maquina[] maquinas, String path, String name) 
+        throws IllegalArgumentException {
+    if (maquinas == null) {
+        throw new IllegalArgumentException("El arreglo de maquinas no puede ser nulo.");
     }
+    if (path == null || path.isEmpty()) {
+        throw new IllegalArgumentException("La ruta no puede estar vacia.");
+    }
+    if (name == null || name.isEmpty()) {
+        throw new IllegalArgumentException("El nombre del archivo no puede estar vacio.");
+    }
+    try {
+        File directorio = new File(path);
+        if (!directorio.exists()) directorio.mkdirs();
+
+        ObjectOutputStream salida = new ObjectOutputStream(
+                new FileOutputStream(path + name + ".dat"));
+        salida.writeObject(maquinas);
+        salida.close();
+        return "Archivo guardado correctamente en: " + path + name + ".dat";
+
+    } catch (IOException e) {
+        return "Error al guardar archivo: " + e.getMessage();
+    }
+}
 
     /**
      * Carga un arreglo de máquinas desde un archivo .dat.
@@ -166,20 +172,24 @@ public class ImplementacionOperacionCRUD
      * @return arreglo de máquinas cargado desde el archivo
      */
     @Override
-    public Maquina[] deserializar(String path, String name) {
-        try {
-            ObjectInputStream entrada = new ObjectInputStream(
-                    new FileInputStream(path + name + ".dat")
-            );
-
-            arregloMaquina = (Maquina[]) entrada.readObject();
-            entrada.close();
-
-            return arregloMaquina;
-
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Error al leer archivo: " + e.getMessage());
-            return null;
-        }
+    public Maquina[] deserializar(String path, String name) 
+        throws IllegalArgumentException {
+    if (path == null || path.isEmpty()) {
+        throw new IllegalArgumentException("La ruta no puede estar vacia.");
     }
+    if (name == null || name.isEmpty()) {
+        throw new IllegalArgumentException("El nombre del archivo no puede estar vacio.");
+    }
+    try {
+        ObjectInputStream entrada = new ObjectInputStream(
+                new FileInputStream(path + name + ".dat"));
+        arregloMaquina = (Maquina[]) entrada.readObject();
+        entrada.close();
+        return arregloMaquina;
+
+    } catch (IOException | ClassNotFoundException e) {
+        System.out.println("Error al leer archivo: " + e.getMessage());
+        return null;
+    }
+}
 }
